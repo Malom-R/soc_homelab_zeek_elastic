@@ -1,0 +1,28 @@
+title: Tentative d'injection SQL dans une requete HTTP (Zeek)
+id: 5b0c8f1e-2a4d-4c59-9c0e-1f6f6f0a7a03
+status: experimental
+description: >
+  Requete HTTP dont l'URI contient des mots-cles SQL typiques, ou dont le
+  User-Agent est celui d'un outil d'injection automatise (http.log de Zeek).
+author: El Hadji Maodo Malick NDIAYE
+tags:
+  - attack.initial-access
+  - attack.t1190
+logsource:
+  product: zeek
+  service: http
+detection:
+  uri_keywords:
+    uri|contains:
+      - 'union+select'
+      - 'union%20select'
+      - 'information_schema'
+      - "'+or+'1'='1"
+      - '%27%20or%20'
+  scanner_agent:
+    user_agent|contains: 'sqlmap'
+  condition: uri_keywords or scanner_agent
+falsepositives:
+  - Scanner de vulnerabilites autorise
+  - Application qui passe legitimement du SQL en parametre (rare, a corriger)
+level: high

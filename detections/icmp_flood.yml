@@ -1,0 +1,38 @@
+title: Flux ICMP (Zeek)
+id: 5b0c8f1e-2a4d-4c59-9c0e-1f6f6f0a7a04
+name: icmp_flow
+status: experimental
+description: Flux ICMP enregistre par Zeek dans conn.log.
+author: El Hadji Maodo Malick NDIAYE
+logsource:
+  product: zeek
+  service: conn
+detection:
+  selection:
+    proto: icmp
+  condition: selection
+level: informational
+---
+title: Volume ICMP anormal depuis une meme source
+id: 5b0c8f1e-2a4d-4c59-9c0e-1f6f6f0a7a05
+status: experimental
+description: >
+  Plus de 100 flux ICMP en une minute depuis la meme adresse source vers la
+  meme cible. Le seuil est a ajuster selon le trafic normal du reseau.
+author: El Hadji Maodo Malick NDIAYE
+tags:
+  - attack.impact
+  - attack.t1498.001
+correlation:
+  type: event_count
+  rules:
+    - icmp_flow
+  group-by:
+    - id.orig_h
+    - id.resp_h
+  timespan: 1m
+  condition:
+    gte: 100
+falsepositives:
+  - Sonde de supervision (ping en rafale)
+level: medium

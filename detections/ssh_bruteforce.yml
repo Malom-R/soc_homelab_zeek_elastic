@@ -1,0 +1,38 @@
+title: Echec d'authentification SSH (Zeek)
+id: 5b0c8f1e-2a4d-4c59-9c0e-1f6f6f0a7a01
+name: ssh_auth_failure
+status: experimental
+description: Connexion SSH dont l'authentification a echoue, vue par Zeek (ssh.log).
+author: El Hadji Maodo Malick NDIAYE
+logsource:
+  product: zeek
+  service: ssh
+detection:
+  selection:
+    auth_success: false
+  condition: selection
+level: low
+---
+title: Brute force SSH depuis une meme source
+id: 5b0c8f1e-2a4d-4c59-9c0e-1f6f6f0a7a02
+status: experimental
+description: >
+  Plus de 20 echecs d'authentification SSH en une minute depuis la meme
+  adresse source vers la meme cible.
+author: El Hadji Maodo Malick NDIAYE
+tags:
+  - attack.credential-access
+  - attack.t1110.001
+correlation:
+  type: event_count
+  rules:
+    - ssh_auth_failure
+  group-by:
+    - id.orig_h
+    - id.resp_h
+  timespan: 1m
+  condition:
+    gte: 20
+falsepositives:
+  - Outil de supervision ou script mal configure qui retente en boucle
+level: high

@@ -1,0 +1,25 @@
+filebeat.modules:
+  - module: zeek
+    connection:
+      enabled: true
+      var.paths: ["/zeek-logs/conn.log"]
+    dns:
+      enabled: true
+      var.paths: ["/zeek-logs/dns.log"]
+    http:
+      enabled: true
+      var.paths: ["/zeek-logs/http.log"]
+    ssh:
+      enabled: true
+      var.paths: ["/zeek-logs/ssh.log"]
+    notice:
+      enabled: true
+      var.paths: ["/zeek-logs/notice.log"]
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "${ELASTIC_PASSWORD}"
+
+setup.kibana:
+  host: "http://kibana:5601"
